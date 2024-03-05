@@ -1,0 +1,272 @@
+Boruta Algo
+
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from boruta import BorutaPy
+te
+data = pd.read_excel('Dry_Bean_Dataset.xlsx')
+
+X = data.drop('Class', axis=1)
+y = data['Class']
+
+y = pd.factorize(y)[0]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+X_train_array = X_train.values
+
+selector = BorutaPy(estimator=RandomForestClassifier(n_estimators=100), max_iter=100, verbose=2)
+
+selector.fit(X_train_array, y_train)
+
+selected_features = selector.support_
+
+print('Selected features:', selected_features)
+
+feature_scores = []
+for i, feature in enumerate(X.columns):
+    if i in selected_features:
+        feature_scores.append(selector.ranking_[i])
+    else:
+        feature_scores.append(0)
+
+print('Feature scores:', feature_scores)
+
+
+
+
+
+
+
+
+
+
+
+
+CFS ALgo
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+data = pd.read_excel('Dry_Bean_Dataset.xlsx')
+
+X = data.drop('Class', axis=1)
+y = data['Class']
+
+y = pd.factorize(y)[0]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+feature_correlation = X_train.corrwith(pd.Series(y_train))
+
+
+print('Feature Correlation:')
+print(feature_correlation)
+
+sorted_features = feature_correlation.abs().sort_values(ascending=False).index
+print('Sorted Features:')
+print(sorted_features)
+
+
+
+
+
+
+
+
+GRAE algo 
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_selection import SelectKBest, mutual_info_classif
+
+data = pd.read_excel('Dry_Bean_Dataset.xlsx')
+
+X = data.drop('Class', axis=1)
+y = data['Class']
+
+y = pd.factorize(y)[0]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+selector = SelectKBest(score_func=mutual_info_classif, k='all')
+selector.fit(X_train, y_train)
+
+selected_features = X.columns[selector.get_support()]
+
+print('Selected Features using Gain Ratio:')
+print(selected_features)
+
+
+
+
+
+
+
+
+
+RFAE Algo
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from skrebate import ReliefF
+
+data = pd.read_excel('Dry_Bean_Dataset.xlsx')
+
+X = data.drop('Class', axis=1)
+y = data['Class']
+
+y = pd.factorize(y)[0]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+relief = ReliefF(n_neighbors=20)
+relief.fit(X_train.values, y_train)
+
+selected_features = X.columns[relief.top_features_]
+
+print('Selected Features using Relief F:')
+print(selected_features)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ripper Algo
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from wittgenstein import RIPPER
+
+data = pd.read_excel('Dry_Bean_Dataset.xlsx')
+
+X = data.drop('Class', axis=1)
+y = data['Class']
+
+positive_class = 'SEKER'
+
+y_binary = (y == positive_class).astype(int)
+
+if 1 not in y_binary.values:
+    raise ValueError(f"No instances of positive class '{positive_class}' found in the dataset.")
+
+X_train, X_test, y_train, y_test = train_test_split(X, y_binary, test_size=0.2, random_state=42, stratify=y_binary)
+
+ripper_classifier = RIPPER()
+
+ripper_classifier.fit(X_train, y_train)
+
+predictions = ripper_classifier.predict(X_test)
+
+accuracy = accuracy_score(y_test, predictions)
+print(f"Accuracy: {accuracy:.2f}")
+
+print("Generated Rules:")
+for rule in ripper_classifier.ruleset_:
+    print(rule)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RFE
+import pandas as pd¶
+from sklearn.model_selection import train_test_split from sklearn.feature_selection import RFE from sklearn.linear_model import LogisticRegression from sklearn.preprocessing import StandardScaler from sklearn.metrics import accuracy_score
+
+data = pd.read_excel('Dry_Bean_Dataset.xlsx')
+
+X = data.drop('Class', axis=1) y = data['Class']
+
+y = pd.factorize(y)[0]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+scaler = StandardScaler() classifier = LogisticRegression(max_iter=1000)
+
+X_train_scaled = scaler.fit_transform(X_train) X_test_scaled = scaler.transform(X_test)
+
+num_features_to_select = 5 
+
+X_train_rfe = rfe.fit_transform(X_train_scaled, y_train)
+
+classifier.fit(X_train_rfe, y_train)
+
+X_test_rfe = rfe.transform(X_test_scaled) predictions = classifier.predict(X_test_rfe)
+
+accuracy = accuracy_score(y_test, predictions) print(f"Accuracy: {accuracy:.2f}")
+
+selected_features = X.columns[rfe.support_] print("Selected Features:") print(selected_features)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
